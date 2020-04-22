@@ -23,6 +23,14 @@ public class BankClientService {
         }
     }
 
+    public boolean validateClient(String name, String pass) throws DBException {
+        try {
+            return getBankClientDAO().validateClient(name, pass);
+        } catch (SQLException e) {
+            throw new DBException(e);
+        }
+    }
+
     public BankClient getClientByName(String name) throws DBException {
         try {
             return getBankClientDAO().getClientByName(name);
@@ -59,11 +67,12 @@ public class BankClientService {
 
     public boolean sendMoneyToClient(BankClient sender, String name, Long value) {
         try {
+            BankClient clientTo = getBankClientDAO().getClientByName(name);
             if (getBankClientDAO().validateClient(sender.getName(), sender.getPassword())) {
                 if (getBankClientDAO().isClientHasSum(sender.getName(), value)) {
-                    getBankClientDAO().updateClientsMoney(sender.getName(), sender.getPassword(), (-1*value));
-                    BankClient clientTo= getBankClientDAO().getClientByName(name);
-                    getBankClientDAO().updateClientsMoney(clientTo.getName(), clientTo.getName(), value);
+                    getBankClientDAO().updateClientsMoney(sender.getName(), sender.getPassword(), (-1 * value));
+                    getBankClientDAO().updateClientsMoney(clientTo.getName(), clientTo.getPassword(), value);
+                    return true;
                 } else {
                     return false;
                 }
@@ -73,7 +82,6 @@ public class BankClientService {
         } catch (SQLException e) {
             return false;
         }
-        return false;
     }
 
     public void cleanUp() throws DBException {

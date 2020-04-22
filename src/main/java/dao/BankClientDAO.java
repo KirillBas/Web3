@@ -22,8 +22,8 @@ public class BankClientDAO {
         statement.execute("select * from bank_client");
         ResultSet result = statement.getResultSet();
         List<BankClient> resultList = new ArrayList<>();
-        BankClient bankClient = new BankClient();
         while (result.next()) {
+            BankClient bankClient = new BankClient();
             bankClient.setId(result.getLong(1));
             bankClient.setName(result.getString(2));
             bankClient.setPassword(result.getString(3));
@@ -35,7 +35,8 @@ public class BankClientDAO {
 
     public boolean validateClient(String name, String password) throws SQLException {
         List<BankClient> validateClient = getAllBankClient();
-        for (BankClient client: validateClient) {
+        for (int i = 0; i < validateClient.size(); i++) {
+            BankClient client = validateClient.get(i);
             if (client.getName().equals(name) && client.getPassword().equals(password)) {
                 return true;
             }
@@ -45,8 +46,11 @@ public class BankClientDAO {
 
     public boolean validateDuplicate(String name) throws SQLException {
         List<BankClient> validateClient = getAllBankClient();
-        for (BankClient client: validateClient) {
-            System.out.println(client.getName() + " duplicate " + name);
+        System.out.println();
+
+        for (int i = 0, validateClientSize = validateClient.size(); i < validateClientSize; i++) {
+            BankClient client = validateClient.get(i);
+            System.out.println(client.getName());
             if (client.getName().equals(name)) {
                 return true;
             }
@@ -58,6 +62,7 @@ public class BankClientDAO {
         if (validateClient(name, password)) {
             BankClient currentClient = getClientByName(name);
             Long updateMoneys = currentClient.getMoney() + transactValue;
+            System.out.println("money " + updateMoneys);
             preparedStatement = connection.prepareStatement(updateMoney);
             preparedStatement.setString(1, String.valueOf(updateMoneys));
             preparedStatement.setString(2, String.valueOf(currentClient.getId()));

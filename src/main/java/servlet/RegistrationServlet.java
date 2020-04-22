@@ -48,7 +48,7 @@ public class RegistrationServlet extends HttpServlet {
                 pageVariables.put("message", "Client not add");
                 resp.getWriter().println(PageGenerator.getInstance().getPage("resultPage.html", pageVariables));
                 resp.setContentType("text/html;charset=utf-8");
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.setStatus(HttpServletResponse.SC_OK);
             }
         }
     }
