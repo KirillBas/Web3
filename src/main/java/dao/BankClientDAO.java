@@ -36,7 +36,17 @@ public class BankClientDAO {
     public boolean validateClient(String name, String password) throws SQLException {
         List<BankClient> validateClient = getAllBankClient();
         for (BankClient client: validateClient) {
-            System.out.println(client.getName() + " " + client.getPassword());
+            if (client.getName().equals(name) && client.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean validateDuplicate(String name) throws SQLException {
+        List<BankClient> validateClient = getAllBankClient();
+        for (BankClient client: validateClient) {
+            System.out.println(client.getName() + " duplicate " + name);
             if (client.getName().equals(name)) {
                 return true;
             }
@@ -98,7 +108,7 @@ public class BankClientDAO {
     }
 
     public boolean addClient(BankClient client) throws SQLException {
-        boolean check = validateClient(client.getName(), client.getPassword());
+        boolean check = validateDuplicate(client.getName());
         System.out.println(check);
         if (!check) {
             preparedStatement = connection.prepareStatement(insertSQL);
